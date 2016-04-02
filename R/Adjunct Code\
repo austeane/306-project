@@ -1,0 +1,13 @@
+per60Subset = subset.data.frame(dat, Gm > 14, select = c(TOI,G,A1,A2,A1OnAttempts:A3OnDirectGoals))
+per60Subset = (per60Subset / per60Subset$TOI) * 60
+per60Subset = subset.data.frame(per60Subset, select=-TOI)
+datSubsetted = subset.data.frame(dat, Gm > 14, select = c(Name, SalaryLog, PosSimple, Age, CF60, CA60, FF60, FA60, SF60, SA60))
+datSubsetted = cbind(per60Subset, datSubsetted)
+ModASS = regsubsets(SalaryLog ~ .-Name-PosSimple, data=datSubsetted, method="exhaustive", nvmax = 26)
+sModASS = summary(ModASS)
+which.max(sModASS$adjr2)
+sModASS
+
+modFinal = lm(SalaryLog ~ G+A1+A1OnAttempts+A1OnOddmanRushes+A1OnDirectGoals+A2OnAttempts+A2OnShotsOnGoal+A2OnOddmanRushes+A3OnShotsOnGoal+A3OnDirectGoals+Age+CF60+CA60+FA60+SA60, data=datSubsetted)
+summary(modFinal)
+names(which.max(sModASS$adjr2))
